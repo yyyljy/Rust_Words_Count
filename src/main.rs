@@ -10,11 +10,8 @@ fn main() {
     
     // 단어별 카운트
     let word_counts = count_words(&out);
+    print_sort_by_value_desc(&word_counts);
 
-    // 결과 출력
-    for (word, count) in word_counts {
-        println!("{}: {}", word, count);
-    }
 }
 
 fn remove_special_chars(word: &str) -> String {
@@ -30,7 +27,11 @@ fn remove_special_chars(word: &str) -> String {
 
 fn count_words(text: &str) -> HashMap<String, u32> {
     let mut word_counts: HashMap<String, u32> = HashMap::new();
-    let blacklists =  vec!["","a","an","any","other", "or", "not", "are", "is","and","by","the","this","for","to","be","of","on","in","can","that","as","with","which","set","it"];
+    let blacklists =  vec![
+        "","a","an","any","are","and","all","at","by","be","as","each","high",
+        "can","for","may","not", "has","in","its","is","it",
+        "other", "or","one","of","on","such","set",
+        "this","to", "that","their","they","the","time","we","with","which","will"];
     // 단어 추출 및 카운트
     for word in text.split_whitespace() {
         let cword = remove_special_chars(word);
@@ -39,6 +40,15 @@ fn count_words(text: &str) -> HashMap<String, u32> {
             *word_counts.entry(cword.to_lowercase()).or_insert(0) += 1;
         }
     }
-    word_counts.retain(|_, &mut count| count >= 10);
+    word_counts.retain(|_, &mut count| count >= 15);
     word_counts
+}
+
+fn print_sort_by_value_desc(map: &HashMap<String, u32>) {
+    let mut sorted_vec: Vec<(&String, &u32)> = map.iter().collect();
+    sorted_vec.sort_by(|a, b| b.1.cmp(a.1));
+    
+    for (word, count) in sorted_vec {
+        println!("{}:{}",word,count);
+    }
 }
